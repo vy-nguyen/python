@@ -27,20 +27,14 @@ def gen_file(dirpath, minsize, maxsize):
 def walk_dirs(dirpath):
     os.chdir(dirpath)
     cwd = os.getcwd()
-    sum = 0
     for subdir, dirs, files in os.walk('./'):
         for d in dirs:
             os.chdir(cwd + '/' + d)
-            print "Reading files in ", os.getcwd()
             for sub, di, files in os.walk('./'):
-                cnt = 0
                 for f in files:
                     fd = open(f, 'r')
                     rd = fd.read()
                     fd.close()
-                    cnt = cnt + 1
-                    sum = sum + 1
-            print "..... read ", cnt, " files"
 
     print "Read total ", sum, " files"
     os.chdir(cwd)
