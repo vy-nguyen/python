@@ -5,11 +5,11 @@ import string, random, hashlib
 
 def gen_random_data(minsize, maxsize):
     size = random.randint(minsize, maxsize)
-    data = ''.join([random.choice(string.ascii_letters + string.digits) for n in xrange(size)])
+    data = ''.join([random.choice(string.ascii_letters +
+        string.digits) for n in xrange(size)])
+
     sha1 = hashlib.sha1(data).hexdigest()
 
-    print 'sha1: ', sha1
-    print 'dir: ', sha1[:2]
     return data, sha1
 
 def gen_file(dirpath, minsize, maxsize):
@@ -23,6 +23,27 @@ def gen_file(dirpath, minsize, maxsize):
     file = open(name, 'w')
     file.write(data)
     file.close()
+
+def walk_dirs(dirpath):
+    os.chdir(dirpath)
+    cwd = os.getcwd()
+    sum = 0
+    for subdir, dirs, files in os.walk('./'):
+        for d in dirs:
+            os.chdir(cwd + '/' + d)
+            print "Reading files in ", os.getcwd()
+            for sub, di, files in os.walk('./'):
+                cnt = 0
+                for f in files:
+                    fd = open(f, 'r')
+                    rd = fd.read()
+                    fd.close()
+                    cnt = cnt + 1
+                    sum = sum + 1
+            print "..... read ", cnt, " files"
+
+    print "Read total ", sum, " files"
+    os.chdir(cwd)
 
 def main(prog, argv):
     numfiles = 2000
@@ -52,6 +73,8 @@ def main(prog, argv):
     if not os.path.exists(dirpath):
         os.makedirs(dirpath, 0755)
 
+    walk_dirs(dirpath)
+    return
     gen_file(dirpath, 10, maxsize)
 
 if __name__ == "__main__":
